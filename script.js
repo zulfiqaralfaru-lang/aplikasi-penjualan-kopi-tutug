@@ -57,8 +57,11 @@ function calcSaleTotal(){$("saleTotal").textContent=rupiah((+$("salePrice").valu
 function addSale(){
  const p=db.products.find(x=>x.id===$("saleProduct").value),price=+$("salePrice").value||0,qty=+$("saleQty").value||0,date=$("saleDate").value||today();
  if(!p)return toast("Pilih barang."); if(qty<1)return toast("Jumlah minimal 1."); if(p.stock<qty)return toast("Stok tidak cukup.");
- db.sales.push({id:crypto.randomUUID(),date,productId:p.id,product:p.name,price,qty,cost:p.cost,total:price*qty,profit:(price-p.cost)*qty});
+ const newId=crypto.randomUUID();
+ db.sales.push({id:newId,date,productId:p.id,product:p.name,price,qty,cost:p.cost,total:price*qty,profit:(price-p.cost)*qty});
  p.stock-=qty;save();$("saleProduct").value="";$("salePrice").value="";$("saleQty").value=1;$("stockInfo").textContent="";calcSaleTotal();renderAll();toast("Penjualan berhasil disimpan.")
+ printReceipt(newId);
+}
 }
 function renderSales(){
  const q=$("saleSearch").value.toLowerCase();
